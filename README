@@ -1,3 +1,6 @@
+Airfoil class that handles the loading and basic processing of data associated with an airfoil 
+at multiple angles of attack. Each of the provided directories naca0012/ and naca2412/ contain data for one airfoil.
+
 This code is contained in a class called Airfoil, which is called from the 
 main function, and processes a directory containing coordinates files and 
 angle files containing pressuue coefficients along an airfoil. The use of 
