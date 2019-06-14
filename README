@@ -1,0 +1,98 @@
+Part 1
+
+Writeup
+
+The first consideration was ensuring that the layout matches that of the 
+larger data set, i.e. column one is user ID, column 2 is movie ID, 
+column 3 is rating, and column 4 is a timestamp. I also created at least 
+one comparison giving a coefficient of one, to have variability in data 
+and ensure that the program works. I ensured sure that each comparison 
+between the three movies yielded different results, e.g. 1 for movie 1 
+and 2, and 0.4 for movie 1 and 3. This ensured that I could test that 
+the maximally matching movies is returned. The layout of the original 
+data set are columns with each line a different user, movie index, and 
+rating, however users are repeated based on the movies they watch. 
+Therefore, I tried to mimic this in my data, with for example person 2 
+having three rows, since they watched movies 1, 2 and 3. In addition, I 
+decided to ensure that each movie comparison met the user threshold of 
+5. This is to stay consistent with the accuracy that we require for the 
+algorithm to compare two movies in the larger data set. Another 
+consideration was the final logic in in the ‘similarity’ function, 
+whereby the larger movie index should replace the smaller one, has a lot 
+of different possibilities which can create bugs. For example, if the 
+currently stored value is negative, but the recently calculated index is 
+0, this means that the two current movies cannot be compared, and we 
+should not replace the currently stored value, so the logic of ‘if P_ij 
+> currently stored value’ is not enough to ensure that every case is 
+satisfied. Therefore, when testing my smaller data set, I would try and 
+slightly alter the dataset I made, e.g. decrease the threshold between 
+two movies and seeing if the stored index changes, or adding a movie, 
+and ensuring that no similar movie is returned. I would also change the 
+movie indices in order that they didn’t increment starting from 1 and 
+see if that returned the correct answer as well.
+
+With respect to the reference file, as the dataset I created was very 
+small, I manually calculated by hand the similarity coefficients between 
+each pair of movies (3 comparisons in total- movies 1 and 2, 1 and 3, 
+and 2 and 3. For each movie, I then returned the largest similarity 
+coefficient for each movie, and wrote it down as a reference, and then 
+checked that my algorithm correctly calculated the average ratings and 
+also the cosine adjusted similarity coefficient for each movie. When 
+testing using my test data, I also tried changing the movie numbers so 
+that they weren't consecutive integers, to check that it works in those 
+cases.
+
+
+Part 2
+
+Command Line Output
+$ python3 similarity.py ml-100k/u.data similarities.txt 5
+Input MovieLens file: ml-100k/u.data
+Output file for similarity data: similarities.txt
+Minimum number of common users: 5
+Read 100000 lines with total of 1682 movies and 943 users
+Computed similarities in 31.8885961 seconds
+
+1 (918, 0.91, 5)
+2 (1056, 1.0, 5)
+3 (1081, 0.98, 5)
+4 (35, 0.8, 6)
+5 (976, 0.93, 5)
+6 (279, 0.96, 5)
+7 (968, 1.0, 7)
+8 (590, 0.86, 6)
+9 (113, 0.96, 5)
+10 (1202, 0.97, 5)
+
+
+
+Writeup
+
+As this program is quite complex, it was necessary to decompose it into 
+many functions. I have decomposed mine into 6 different functions, 
+however it is worth noting that some of my functions might or should be 
+decomposed into even smaller ones, to improve functionality. The first 
+function is ‘CreateMovieDictionary.’ This function reads in the data and 
+returns 4 values: a nested dictionary where each outer key is the movie 
+index, and the values are dictionaries; ‘Sum of Ratings’ and ‘User 
+Ratings’, the latter being a dictionary with each key being user ID of 
+the user who watched that movie, and the value being the rating. The 
+‘Sum of Ratings’ makes calculating the average rating for each movie 
+much faster than having to iterate through all of the data again. The 
+function also returns a sorted list of move indices (also for ease of 
+iterating through the data and returning and ordered list of movies as 
+the final product), and a number of users and number of lines needed for 
+the final print statements. Other functions I created are a 
+‘ComputeAverage’ function, a ‘ComputeCoefficient’ function, and a 
+‘ComputeSimilarity’ function. These help to decompose the maths and the 
+logic required in calculating the function. The first two actually 
+calculate the function, whilst ‘ComputeSimilarity’ handles the logic of 
+determining what value to return, e.g. if user threshold is below the 
+specified value, or the denominator is 0, then it returns 0. Finally, we 
+have the main function, ‘similarity’, which calls the functions in the 
+correct order, and also calls to the ‘WriteToFile’ function, again 
+decomposed separately because of the slightly more complex format 
+required by the assignment specifications. The ‘similarity’ function 
+also prints the 5 statements.
+
+
