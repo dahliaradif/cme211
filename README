@@ -1,0 +1,55 @@
+This program takes a given maze, in 
+coordinate form, and find a correct path that takes us out of the maze 
+using the right-hand wall algorithm. We return a list of coordinates, in 
+order, of the path starting in the top row and ending in the last row.
+
+Description of C++ code: Firstly, the code takes in two inputs- the 
+maze file, with the coordinates of the walls of the maze, and the 
+solution file to which the output is written. We then initialise a 
+static array with size 210 by 210, to ensure that the biggest maze file 
+will fit (and therefore all the smaller mazes will fit). Note that this 
+means that the array is accessible throughout the function. If there is 
+enough storage space, the entries of 2-D array are initialised to zero. 
+Afterwards, we read the maze file and, split each line into the row and 
+column coordinate respectively, and change each array entry to one, 
+corresponding to the wall coordinates. Once the array is created, the 
+entry point is obtained by iterating over the first row finding the j 
+coordinate for which the entry is 0. The corresponding coordinate is 
+then appended to a string, “result”, which, after completing the maze, 
+will be the result outputted to the file. Now that we have the starting 
+point, the logic proceeds as following: define a variable t that is 1 if 
+the person is facing forwards (in the direction of increasing i), 2 if 
+the person is facing right (in the direction of decreasing j), 3 if the 
+person is facing left (in the direction of increasing j), and 4 if the 
+person is facing backwards (in the direction of decreasing i). Inside 
+the while loop, which ensures that we are not in the last row, and 
+therefore exit point, of the maze, there are 4 main if statements. If 
+there is no wall to the right, then the new orientation is determined by 
+the old orientation, given by t. For example, if t was one before 
+turning right, then the new t is given by 2. By doing this, we can make 
+progress through the maze by ensuring that we are always facing 
+‘forward’ relative to the new position. In this way, it is far easier to 
+implement the right-hand algorithm, whereby priority is given to right 
+turns, then forward turns, then left turns, then back turns. After each 
+turn, we append the new coordinate to ‘result.’ Once the while loop is 
+broken, we have reached the last row and appended the final coordinate, 
+and then we open the solution file and write the result to the file.
+
+Brief summary of code verification with ‘checksoln.py’: In this 
+code, we check for different things to ensure that our solution is 
+valid. Firstly, we input two files- the maze file and the corresponding 
+solution file. The maze file is read in, and the maze is recreated using 
+a numpy array. The solutions file is also read in, and the coordinates 
+are stored in another numpy array. We then check that the first and the 
+last coordinate of the solutions file are in fact in the first and last 
+rows of the array, and that their maze value is 0. If the last entry is 
+not in the last row, or the maze value is 1, then we print that the 
+solution is invalid. The code also checks that no walls are crossed in 
+the solution, i.e. we iterate through the coordinates and check that 
+their maze value is 0. Finally, we also check that we have moved in 
+steps through the maze. For every point, we compare it to the point 
+afterwards. If the difference between their i coordinates or their j 
+coordinates is more than 1, then the solution is invalid. Otherwise, if 
+none of these issues have been flagged, then the solution is valid and 
+we print that.
+
