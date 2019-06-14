@@ -1,0 +1,81 @@
+This code is contained in a class called Airfoil, which is called from the 
+main function, and processes a directory containing coordinates files and 
+angle files containing pressuue coefficients along an airfoil. The use of 
+a class is a form of encapsulation, which is a key aspect of OOP. The user 
+of the code can create an instance of the class and run it to produce the 
+desired output, but they cannot see the methodology, functions, or 
+variables contained within the class. The function returns a formatted 
+output containing all the angles in the directory, with the lift 
+coefficient and the stagnation point (coordinates corresponding to the 
+largest pressure coefficients for that angle). We firstly initialise the 
+input directory, assigning the xy.dat file to ‘self.x_y_data’- this means 
+we are representing an instance of that object in the self variable. It is 
+therefore available everywhere within that class, so we can use it in 
+different methods. We also create a list of files that contain a number, 
+using the glob.glob() function. By the nature of these directories, these 
+are all of the angle files. The main function in this class is called 
+start(), and this is where we iterate over each angle file, and compute 
+the lift coefficient and stagnation point for the respective angle. We 
+firstly create an empty list called results in which we will store a 
+dictionary for each angle file output; that is to say, after completing an 
+iteration of the for loop, our output will consist of a lift coefficient, 
+the maximum of all the pressure coefficients for that particular angle, 
+and the respective panel coordinates, which we store in a dictionary under 
+key values “angle”, “cl”, “xy” and “maxCp”.
+
+In order to actually compute the output, we call each function in turn. 
+Note that the class consists of many decomposed functions. This is to 
+ensure that the code is readable and tidy, and that if any errors occur, 
+it is much easier to understand why they are happening. Inside the for 
+loop, we extract the angle from the name of the file through string 
+slicing, then create a list of x and y coordinates respectively. We then 
+compute the chord length by finding the minimum value of x, and the 
+corresponding value of y, and taking the Euclidean norm of the first 
+coordinates with those coordinates. We call the ‘get_lift_coefficient’ 
+function, which calculates the value based on the assignment instructions. 
+This function is in turn decomposed into two other functions. We firstly 
+call ‘total_lift_coefficient’, whereby we create two counter variables, cx 
+and cy, which are the sum of the decomposed components of the 
+non-dimensional force acting perpendicular to the plane. These components, 
+delta x and delta y, are calculated for each panel (each i and j) in the 
+‘panel_lift_coefficient’ function, and the values for each of them are 
+returned and added to cx and cy with each iteration. Once we have cx and 
+cy, we calculate the lift coefficient using the formula given, ensuring 
+that we change the angle to radians. In the start function, we also call 
+the ‘get_stagnation_point’ function to return a tuple of the largest 
+pressure coefficient value, and the corresponding panel average 
+coordinates.
+
+Once we have stored our results for each angle in a dictionary, and each 
+dictionary in our results list, we sort the list by angle size so that the 
+output is in increasing order. We also need to format the data to match 
+the program requirements. This process also uses many decomposed 
+functions. The main formatting occurs in the __repr__ function, whereby we 
+concatenate each dictionary in the format needed, using \t for spacing. 
+This function returns a printable representation of the object, our 
+output. This function is another key part of OOP, as we can control 
+exactly how to represent the class object from within the class, namely in 
+the format specified. We firstly print what the directory is, using a 
+separate function that separates the name into naca and XXXX as the 
+digits, and then capitalises it. We then print the headers and the 
+separating lines, and then each angle data respectively on a new line. 
+This part calls a function called format, which adds the required number 
+of 0’s to the end of the rounded values (to match the output) and realigns 
+positive numbers so that everything in the final output lines up neatly.
+
+This code also includes run time errors that display an error message if a 
+mistake is detected. Using the os.path.isdir() function, I created two 
+Boolean functions, ‘is_valid_directory’, and ‘do_xy_files_exist’, and a 
+function called ‘do_angle_files_exist’ that returns the length of the list 
+of angle files. If this is 0, then we have an error because we do not have 
+any angle files to iterate through. The former two return False, then we 
+also cannot run the function because we do not have coordinates data or a 
+valid directory. I also created two run time errors in the ‘read_xy_data’ 
+and ‘read_angle_data.’ For the former, if the length of the lists 
+containing the X and Y coordinates differ, then this means that we have 
+missing x or y coordinates in the data, which in turn means that the panel 
+calculations would be inaccurate, so we produce an error. Similarly, if 
+for any of the pressure coefficients, we have an empty space, then we are 
+missing pressure data for a particular panel, which might skew our results 
+and again give us incorrect values.
+
