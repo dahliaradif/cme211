@@ -1,0 +1,5 @@
+CGA -1
+CTA 0 7
+AGG 2
+ACC 5
+GAC 4

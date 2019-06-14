@@ -1,0 +1,112 @@
+Part 2
+
+$ python3 generatedata.py 1000 600 50 reference1.txt reads1.txt
+reference length: 1000
+number reads: 600
+read length: 50
+aligns 0: 0.14
+aligns 1: 0.76
+aligns 2: 0.1
+
+$ python3 generatedata.py 10000 6000 50 reference2.txt reads2.txt
+reference length: 10000
+number reads: 6000
+read length: 50
+aligns 0: 0.14883333333333335
+aligns 1: 0.7545
+aligns 2: 0.09666666666666666
+
+$ python3 generatedata.py 100000 60000 50 reference3.txt reads3.txt
+reference length: 100000
+number reads: 60000
+read length: 50
+aligns 0: 0.14875
+aligns 1: 0.7496166666666667
+aligns 2: 0.10163333333333334
+
+Writeup
+
+There were many considerations required when creating the code. Firstly, the main challenge was to 
+ensure that the logic was correctly formulated; it was important to ensure that all of the 
+requirements for generating the reference and different types of reads were properly satisfied. 
+Because these requirements were so complex, I decided to functionally decompose the main function 
+‘generatedata’ into smaller functions, such as ‘generateRead1’ and ‘generateReference’ in order to 
+make the code clear and easy to understand. In addition, another consideration was regarding the 
+indices. For example, when slicing a string (as required when generating reads that align once or 
+twice), ensuring that we slice exactly the read length, rather than one character more or one 
+character less, was vital to check. When defining the part of the reference we are looking at, e.g. 
+the first 75%, I had to cast the value of (0.75*referenceLength) to an integer for the function to 
+work; in general, making sure the right variable type was in place was a constant consideration.  
+Another consideration was how the code works on reference lengths that are not divisible by 4, e.g. 
+10. In order to ensure that every single read generated is of the correct length, e.g., n, then int() 
+is not enough, as this could generate a read of length n-1 if the random number generated is close 
+enough to the end of the reference. Instead, the ceiling function has to be used. However, I did not 
+implement this because the math library was not part of the program allowances.
+
+The program working on hand generated data does not necessarily imply that the function will work on all 
+data sets. Smaller data sets like the one we generated often do not capture a wide enough set of 
+situations that could occur. For example, the cases when the reference length is not divisible by 4 (which 
+was not captured by our hand-generated data set, with a reference length of 12) would not always generate 
+reads of the same length.
+
+We should not always expect an exact 15%/75%/10% distribution of reads. Whilst random number 
+generators will on average give us similar proportions, there is still a chance of slight skewness. 
+It is possible, e.g., that the random number generator picks a number greater than 0.9 more than the 
+expected number of times (10% of the time), which in turn would generate more reads that align twice 
+than we would expect.
+
+For this part of the code, I spent about 1.5 hours creating the initial draft, then another 2 hours 
+revising it, decomposing the functions, and checking functionality.
+
+
+Part 3
+
+$ python3 processdata.py reference1.txt reads1.txt alignments1_ref.txt
+reference length: 1000
+number reads: 600
+aligns 0: 0.14
+aligns 1: 0.7566666666666667
+aligns 2: 0.10333333333333333
+elapsed time: 0.009448
+
+$ python3 processdata.py reference2.txt reads2.txt alignments2_ref.txt
+reference length: 10000
+number reads: 6000
+aligns 0: 0.14883333333333335
+aligns 1: 0.7545
+aligns 2: 0.09666666666666666
+elapsed time: 0.278571
+
+$ python3 processdata.py reference3.txt reads3.txt alignments3_ref.txt
+reference length: 100000
+number reads: 60000
+aligns 0: 0.14875
+aligns 1: 0.7496166666666667
+aligns 2: 0.10163333333333334
+elapsed time: 24.373505
+
+Writeup
+
+The distribution of reads that align zero times, once and twice, exactly match datasets 1 and 2 
+computed with the ‘generatedata’ function. For dataset 1, the distribution of reads almost exactly 
+matches. The slight discrepancy in the distribution of reads that align once or twice could be 
+because there is a very small probability, due to the random number generator, that a read designed 
+to align once in fact aligns twice. The number of reads that align zero times, however, exactly 
+matches, as there is no chance of that read aligning once or twice by construction. As the reference 
+length increases, the discrepancies decrease.
+
+As the reference length and read length increase by a factor of 10, the time of the program 
+exponentially increases., e.g. a factor of 10 (from dataset 2 to dataset 3) increases time from 0.2 
+seconds to 25 seconds, which is over a 100x increase. This means that each time we multiply the 
+initial reference length and read length (1000 and 600) by a factor of 10, maintaining a coverage of 
+30, we end up multiplying by an additional power of 10, e.g. from 1000 to 10,000, the time increases 
+by 2 * 10 to 0.2 seconds, and from 10,000 to 100,000, the time increases by about 1 * 102, to 25 
+seconds. Therefore, for a reference of length 3 billion, we can estimate the time to be about 3 *0.01 
+* (10*100*1000*…*1 million) which is a huge number of seconds, clearly not feasible for this program 
+to implement.
+
+For this part of the code, I spent about 3 hours on it initially, but when testing it out on the 
+larger data sets, the logic of the while loop wasn’t correct, and the formatting of the solution was 
+also different to the expected format, so it took some more time to ensure that it would run 
+correctly (and efficiently).
+
